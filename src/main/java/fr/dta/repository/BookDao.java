@@ -41,8 +41,8 @@ public class BookDao {
 		return query.getSingleResult();
 	}
 	
-	public void delete(Book book) {
-		em.remove(getById(book.getId()));
+	public void delete(Long id) {
+		em.remove(getById(id));
 	}
 
 }

@@ -1,8 +1,11 @@
-package fr.iocean.dta.user;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
+package fr.dta;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,38 +15,38 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import fr.iocean.dta.IntegrationTest;
-import fr.iocean.dta.user.model.User;
-import fr.iocean.dta.user.service.UserService;
+import fr.dta.book.User;
+import fr.dta.entities.Book;
+import fr.dta.service.BookService;
+
 
 @Sql("classpath:test-user-data.sql")
-public class UserIT extends IntegrationTest {
-
+public class BserlT extends IntegrationTest{
+	
 	@Autowired
-	UserService userService;
-
+	BookService bookService;
+	
 	@Test
 	@WithMockUser(authorities = "TEST")
 	public void testCreate() throws Exception {
-		User u = new User("test");
-		u.setLogin("test");
+		Book b = new Book();
+		b.setLogin("test");
 
 		this.mockMvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8")
-				.content(jsonHelper.serialize(u))).andExpect(status().isCreated());
+				.content(jsonHelper.serialize(b))).andExpect(status().isCreated());
 		this.mockMvc.perform(get("/api/users")).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$", hasSize(3))).andExpect(status().isOk());
-
 	}
-
+	
 	@Test
 	@WithMockUser
 	public void testCreatePreconditionFail() throws Exception {
-		User u = new User("test");
-		u.setLogin(null);
-		u.setPassword(null);
+		Book b = new Book();
+		b.setLogin(null);
+		b.setPassword(null);
 
 		this.mockMvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8")
-				.content(jsonHelper.serialize(u)))
+				.content(jsonHelper.serialize(b)))
 		.andDo(MockMvcResultHandlers.print())
 		.andExpect(jsonPath("$[*].field", containsInAnyOrder("password", "login")))
 		.andExpect(jsonPath("$[0].objectName").value("user"))
@@ -55,16 +58,16 @@ public class UserIT extends IntegrationTest {
 	@Test
 	@WithMockUser
 	public void testUpdate() throws Exception {
-		User user = userService.findById(1l);
-		Assert.assertEquals("admin@iocean.fr", user.getLogin());
+		Book user = bookService.findById(1l);
+		Assert.assertEquals("admin@iocean.fr", book.getLogin());
 
-		user.setLogin("test@iocean.fr");
+		book.setLogin("test@iocean.fr");
 		this.mockMvc
 				.perform(put("/api/users/{id}", 1).contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8")
-						.content(jsonHelper.serialize(user)))
+						.content(jsonHelper.serialize(book)))
 				.andExpect(jsonPath("$.login").value("test@iocean.fr")).andExpect(status().isOk());
 	}
-
+	
 	@Test
 	@WithMockUser(authorities = "TEST")
 	public void testGetUser() throws Exception {
@@ -86,5 +89,6 @@ public class UserIT extends IntegrationTest {
 		this.mockMvc.perform(get("/api/users")).andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$", hasSize(2))).andExpect(status().isOk());
 	}
+
 
 }

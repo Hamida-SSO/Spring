@@ -1,4 +1,4 @@
-package fr.dta.repository;
+package fr.dta;
 
 import java.util.Properties;
 

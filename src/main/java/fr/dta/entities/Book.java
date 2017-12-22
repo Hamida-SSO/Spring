@@ -4,10 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,12 +17,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fr.dta.validator.Isbn;
 
 @Entity
-@SequenceGenerator(name = "seq_book", sequenceName = "seq_book", initialValue = 1, allocationSize = 1)
+//@SequenceGenerator(name = "seq_book", sequenceName = "seq_book", initialValue = 1, allocationSize = 1)
 @Table(name = "book")
 public class Book {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_book")
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_book")
 	private Long id;
 
 	@Length(max = 100)
@@ -44,9 +43,6 @@ public class Book {
 	@Isbn
 	@Column(name ="isbn")
 	private String isbn;
-
-	public Book() {
-	}
 
 	public String getIsbn() {
 		return isbn;

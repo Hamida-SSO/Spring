@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan
+@ComponentScan("fr.dta")
 @EnableTransactionManagement
 public class App {
 	public App() {
